@@ -80,7 +80,7 @@ public class Protocollo {
 		return processed;
 	}
 
-	public static List<String> Pedro(String input) {
+	public static List<String> processInputMatcher(String input) {
 		List<String> processed = new ArrayList<String>();
 
 		if (input.isEmpty() | input == null) {

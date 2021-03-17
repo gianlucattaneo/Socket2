@@ -3,12 +3,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+//import java.util.ArrayList;
+//import java.util.List;
+//import java.util.stream.Collectors;
 
 public class Client {
-
 	public static void main(String[] args) throws IOException {
 		Socket serverSocket = null;
 		String serverIP = "localhost";
@@ -29,17 +28,19 @@ public class Client {
 
 		BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in));
 		String fromUser;
-		List<String> fromServer = new ArrayList<String>();
 		boolean running=true;
 
 		while(running) {
 
 			while(!in.ready()) {}
-
-			fromServer = in.lines().collect(Collectors.toList());
-			for(String received : fromServer) {
-				System.out.println("Server: " + received);
+			while(in.ready()) {
+				System.out.println("Server: " + in.readLine());
 			}
+//			fromServer = in.lines().collect(Collectors.toList());
+//			fromServer = in.
+//			for(String received : fromServer) {
+//				System.out.println("Server: " + received);
+//			}
 
 			fromUser = userIn.readLine(); 
 			out.println(fromUser);
