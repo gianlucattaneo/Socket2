@@ -32,16 +32,23 @@ public class Server {
 		
 		PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
 		BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-		String inputLine, outputLine ="ERRORE NELL'INSERIMENTO DATI";
+		String inputLine, outputLine;
 		
 		boolean running = true;
 		
+		out.println("Inserire il comando: [EXIT per terminare]");
+		
 		while (running) {
-			out.println("Inserire il comando:");
+			
+			outputLine ="";
+			
 			
 			inputLine = in.readLine();
 			
-			List<String> decoded = Protocollo.processInput(inputLine);
+			if(inputLine.equalsIgnoreCase("EXIT"))
+				break;
+			
+			List<String> decoded = Protocollo.Pedro(inputLine);
 			
 			for(String s : decoded) {
 				System.out.println(s);
@@ -59,7 +66,7 @@ public class Server {
 							found.addAmico(new Persona(decoded.get(i)));
 							added += name + ", ";
 						}
-						outputLine = "Ho Aggiunto: "+ added.substring(0,added.length()-2);
+						outputLine = "Ho Aggiunto: "+ added.substring(0,added.length()-2) + " agli amici di "+ found.getNome();
 					}else {
 						outputLine = decoded.get(1)+ " non esiste";
 					}
@@ -79,7 +86,7 @@ public class Server {
 							if (found.deleteAmico(name))
 								removed += name+", ";
 						}
-						outputLine = "Ho Rimosso: "+ removed.substring(0,removed.length()-2);
+						outputLine = "Ho Rimosso: "+ removed.substring(0,removed.length()-2)+" dagli amici di "+ found.getNome();
 					}else {
 						out.println(decoded.get(1)+" non esiste");
 					}
@@ -94,28 +101,29 @@ public class Server {
 				}
 				break;
 			}
+			case(Protocollo.errSymbol):{
+				outputLine = decoded.get(1);
+				break;
+			}
 			default:{
 				Persona found = findName(decoded.get(0));
 				if (found != null) {
 					if(decoded.size()==1) {
-						outputLine = "Gli amici di " + decoded.get(0) + " sono: " + found.printAmici();
+						outputLine = "Gli amici di " + found.getNome() + " sono: " + found.printAmici();
 					}else {
 						if (found.findAmico(decoded.get(1)))
-							outputLine = "true";
+							outputLine = decoded.get(1)+" è presente tra gli amici di "+found.getNome();
 						else 
-							outputLine = "false";
+							outputLine = decoded.get(1)+" non è presente tra gli amici di "+found.getNome();
 					}
+				}else {
+					out.println(decoded.get(1)+" non esiste");
 				}
 			}
 			}
 			
-			out.println("Esito: " + outputLine + "   |   Vuoi  continuare? (n per terminare)");
-			
-			if(in.readLine().equalsIgnoreCase("n")) {
-				running = false;
-			}	
+			out.println("Esito: " + outputLine + "\n Inserire il comando: [EXIT per terminare]");
 		}
-		
 		
 		out.close();
 		in.close();

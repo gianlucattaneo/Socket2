@@ -49,7 +49,10 @@ public class Persona {
 		for(Persona p : amici) {
 			result += p.getNome() + ", ";
 			}
-		return result.substring(0,result.length()-2);
+		if (result.length()>2) {
+			result = result.substring(0,result.length()-2);
+		}
+		return result;
 	}
 	public String toString() {
 		return String.format("Nome: %s", this.nome);
